@@ -55,6 +55,12 @@ html, body {
     .banner-container img {
         width: 90%; /* slightly bigger on smaller screens */
     }
+
+    .content iframe {
+        width: 90%;  /* make video fit smaller screens */
+        height: auto;
+        aspect-ratio: 16 / 9; /* maintain 16:9 ratio */
+    }
 }
 </style>
 </head>
@@ -68,10 +74,13 @@ html, body {
 
 <!-- Video -->
 <div class="content">
-    <iframe
-        src="https://drive.google.com/file/d/11CU1q4ycun6gN3HFzFpmC_FvCyOqjSSx/preview"
-        width="640"
-        height="480">
+    <iframe 
+        src="https://www.youtube.com/embed/3RXQ1a4hz18" 
+        width="640" 
+        height="360" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
     </iframe>
 </div>
 
