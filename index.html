@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KnowTheWatcher</title>
+
 <style>
 html, body {
     margin: 0;
@@ -5,10 +11,10 @@ html, body {
     background-color: black;
 }
 
-/* Banner container now flex + responsive */
+/* Banner container */
 .banner-container {
     width: 100vw;
-    height: 300px; /* default height for desktop */
+    height: 300px; /* default desktop height */
     background-color: black;
     display: flex;
     justify-content: center;
@@ -44,10 +50,40 @@ html, body {
 /* Mobile-specific adjustments */
 @media screen and (max-width: 768px) {
     .banner-container {
-        height: 200px; /* shorter height on mobile */
+        height: 200px; /* shorter height on phones */
     }
     .banner-container img {
-        width: 90%; /* slightly bigger on mobile */
+        width: 90%; /* slightly bigger on smaller screens */
     }
 }
 </style>
+</head>
+
+<body>
+
+<!-- Banner -->
+<div class="banner-container">
+    <img src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/banner.png?raw=true" alt="Banner">
+</div>
+
+<!-- Video -->
+<div class="content">
+    <iframe
+        src="https://drive.google.com/file/d/11CU1q4ycun6gN3HFzFpmC_FvCyOqjSSx/preview"
+        width="640"
+        height="480">
+    </iframe>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <a href="https://youtu.be/a6ECEc1bnZ0?si=Kpu-GkyB28n_bR9P" target="_blank">
+        <img
+            src="https://lh3.googleusercontent.com/d/1H_RWRjEgGgEHOc5XkjgqG1ND1VTo6Zs8"
+            alt="YouTube"
+            style="width: 500px; cursor: pointer;">
+    </a>
+</div>
+
+</body>
+</html>
