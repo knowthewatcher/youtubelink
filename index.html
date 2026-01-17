@@ -8,31 +8,31 @@
 html, body {
     margin: 0;
     padding: 0;
-    background-color: black;
+    height: 100%;
     overflow: hidden;
 }
 
-/* Full-screen Matrix canvas behind everything */
+/* Matrix canvas covers entire screen behind content */
 #matrix-canvas {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0; /* behind all content */
+    pointer-events: none; /* allow clicks through canvas */
+    background-color: black;
 }
 
 /* Banner container */
 .banner-container {
     width: 100vw;
     height: 300px;
-    background-color: black;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
-    z-index: 1;
+    z-index: 1; /* above canvas */
 }
 
 /* Banner image responsive */
@@ -49,7 +49,6 @@ html, body {
     display: flex;
     justify-content: center;
     padding: 40px 0;
-    background-color: black;
     position: relative;
     z-index: 1;
 }
@@ -59,13 +58,12 @@ html, body {
     display: flex;
     justify-content: center;
     padding: 30px 0;
-    background-color: black;
     color: #777;
     position: relative;
     z-index: 1;
 }
 
-/* Mobile-specific adjustments */
+/* Mobile adjustments */
 @media screen and (max-width: 768px) {
     .banner-container {
         height: 200px;
@@ -116,25 +114,37 @@ html, body {
 </div>
 
 <script>
-// Matrix Rain (1s and 0s)
+// MATRIX RAIN (1s and 0s)
 const canvas = document.getElementById('matrix-canvas');
 const ctx = canvas.getContext('2d');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-// Only 1s and 0s
-const letters = '01'.split('');
-const fontSize = 16;
-const columns = Math.floor(canvas.width / fontSize);
-const drops = [];
-
-for (let i = 0; i < columns; i++) {
-    drops[i] = Math.random() * canvas.height;
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 }
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
+const fontSize = 16;
+let columns = Math.floor(canvas.width / fontSize);
+let drops = [];
+
+// Initialize drops
+function initDrops() {
+    columns = Math.floor(canvas.width / fontSize);
+    drops = [];
+    for (let i = 0; i < columns; i++) {
+        drops[i] = Math.random() * canvas.height;
+    }
+}
+initDrops();
+
+// 1s and 0s
+const letters = '01'.split('');
+
+// Draw function
 function draw() {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillStyle = 'rgba(0,0,0,0.05)'; // fading effect
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.fillStyle = '#0F0';
@@ -147,17 +157,12 @@ function draw() {
         if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
             drops[i] = 0;
         }
-
         drops[i]++;
     }
 }
 
+// Animate
 setInterval(draw, 33);
-
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-});
 </script>
 
 </body>
