@@ -8,7 +8,7 @@
 html, body {
     margin: 0;
     padding: 0;
-    overflow: auto;
+    overflow-x: hidden;
     background-color: black;
 }
 
@@ -33,17 +33,17 @@ html, body {
 }
 
 .left-panel img {
-    height: calc(108% * (100vh - 300px)); /* slightly smaller */
+    height: calc(108% * (100vh - 300px));
     width: auto;
     display: block;
     margin-top: 300px;
-    opacity: 0.2; /* dark phase start */
-    animation: fadeLoop 5s ease-in-out infinite;
+    animation: breathe 5s ease-in-out infinite;
 }
 
-@keyframes fadeLoop {
-    0%, 100% { opacity: 0.2; }  /* dark phase */
-    50% { opacity: 1; }          /* full brightness */
+/* Smooth breathing animation */
+@keyframes breathe {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 1; }
 }
 
 /* Banner container */
@@ -57,7 +57,6 @@ html, body {
     z-index: 2; /* above left panel */
 }
 
-/* Banner image responsive */
 .banner-container img {
     width: 80%;
     height: auto;
@@ -73,7 +72,7 @@ html, body {
     justify-content: center;
     padding: 40px 0;
     position: relative;
-    z-index: 2; /* above left panel */
+    z-index: 2;
 }
 
 /* Footer */
@@ -83,10 +82,9 @@ html, body {
     padding: 30px 0;
     color: #777;
     position: relative;
-    z-index: 2; /* above left panel */
+    z-index: 2;
 }
 
-/* Footer overlay effect */
 .footer::before {
     content: "";
     position: absolute;
@@ -102,20 +100,22 @@ html, body {
 
 /* Mobile adjustments */
 @media screen and (max-width: 768px) {
+    /* Move left image above video and scale it */
     .left-panel {
-        position: relative; /* remove fixed positioning */
+        position: relative;
         top: auto;
         left: auto;
-        margin: 20px auto 0 auto; /* center above video */
-        width: 90%; /* scale down image */
+        margin: 20px auto 0 auto;
+        width: 90%;
         height: auto;
         z-index: 2;
     }
 
     .left-panel img {
-        width: 100%; /* full width of container */
+        width: 100%;
         height: auto;
         margin-top: 0;
+        animation: breathe 5s ease-in-out infinite;
     }
 
     .banner-container {
@@ -181,7 +181,6 @@ let fontSize;
 let columns;
 let drops = [];
 
-// Katakana + numbers
 const letters = (
   'アイウエオカキクケコサシスセソタチツテト' +
   'ナニヌネノハヒフヘホマミムメモヤユヨ' +
@@ -212,11 +211,9 @@ function draw() {
         const x = i * fontSize;
         const y = drops[i] * fontSize;
 
-        // Bright leading character
         ctx.fillStyle = '#baffba';
         ctx.fillText(char, x, y);
 
-        // Green glow trail
         ctx.fillStyle = '#0f0';
         ctx.shadowColor = '#0f0';
         ctx.shadowBlur = 8;
