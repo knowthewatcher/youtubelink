@@ -152,7 +152,7 @@ html, body {
 </div>
 
 <script>
-// MATRIX RAIN – hybrid green & magenta
+// MATRIX RAIN – cyberpunk neon (magenta & cyan)
 const canvas = document.getElementById('matrix-canvas');
 const ctx = canvas.getContext('2d');
 
@@ -176,7 +176,8 @@ function initMatrix() {
     columnColors = [];
     for (let i = 0; i < columns; i++) {
         drops[i] = Math.random() * canvas.height / fontSize;
-        columnColors[i] = Math.random() > 0.5 ? '#0f0' : '#ff00ff';
+        // Base color: cyan or magenta
+        columnColors[i] = Math.random() > 0.5 ? '#00ffff' : '#ff00ff';
     }
 }
 
@@ -189,10 +190,10 @@ function drawMatrix() {
         const x = i * fontSize;
         const y = drops[i] * fontSize;
 
-        // Column base color with 20% chance to flip
+        // Column color with 20% random flip
         let color = columnColors[i];
         if (Math.random() < 0.2) {
-            color = color === '#0f0' ? '#ff00ff' : '#0f0';
+            color = color === '#ff00ff' ? '#00ffff' : '#ff00ff';
         }
 
         ctx.fillStyle = color;
