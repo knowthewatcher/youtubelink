@@ -37,13 +37,7 @@ html, body {
     width: auto;
     display: block;
     margin-top: 300px;
-    animation: breathe 5s ease-in-out infinite;
-}
-
-/* Smooth breathing animation */
-@keyframes breathe {
-    0%, 100% { opacity: 0.25; }
-    50% { opacity: 1; }
+    opacity: 0.2; /* starting opacity */
 }
 
 /* Banner container */
@@ -100,23 +94,18 @@ html, body {
 
 /* Mobile adjustments */
 @media screen and (max-width: 768px) {
-    /* Move left image below the footer */
     .left-panel {
-        position: relative;
-        top: auto;
-        left: auto;
-        margin: 20px auto 40px auto; /* center horizontally, add spacing below footer */
-        width: 90%; /* scale to mobile width */
+        position: relative; /* remove fixed */
+        margin: 20px auto 40px auto; /* center horizontally below footer */
+        width: 90%;
         height: auto;
-        z-index: 2;
-        pointer-events: auto; /* optional if you want user interaction */
+        pointer-events: auto;
     }
 
     .left-panel img {
         width: 100%;
         height: auto;
         margin-top: 0;
-        animation: breathe 5s ease-in-out infinite;
     }
 
     .banner-container {
@@ -168,9 +157,9 @@ html, body {
     </a>
 </div>
 
-<!-- Left image for mobile (moves below footer) -->
+<!-- Left image -->
 <div class="left-panel">
-    <img src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/SolomonsKeyModel.png?raw=true" alt="Solomons Key Model">
+    <img id="leftImage" src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/SolomonsKeyModel.png?raw=true" alt="Solomons Key Model">
 </div>
 
 <script>
@@ -201,7 +190,7 @@ function initMatrix() {
     }
 }
 
-function draw() {
+function drawMatrix() {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -229,7 +218,21 @@ function draw() {
     ctx.shadowBlur = 0;
 }
 
-setInterval(draw, 33);
+// Natural sinusoidal breathing animation for left image
+const leftImg = document.getElementById('leftImage');
+let start = null;
+
+function breathe(timestamp) {
+    if (!start) start = timestamp;
+    const elapsed = (timestamp - start) / 1000; // seconds
+    // Sinusoidal opacity: min 0.25, max 1
+    leftImg.style.opacity = 0.625 + 0.375 * Math.sin(elapsed * Math.PI); 
+    requestAnimationFrame(breathe);
+}
+
+requestAnimationFrame(breathe);
+
+setInterval(drawMatrix, 33);
 window.addEventListener('resize', initMatrix);
 initMatrix();
 </script>
