@@ -40,7 +40,7 @@ html, body {
     max-height: 100%;
     object-fit: contain;
     display: block;
-    opacity: 0.85;
+    opacity: 0.61;
 }
 
 /* Video content */
@@ -84,11 +84,11 @@ html, body {
 }
 
 .left-panel img {
-    width: 100%;        /* maximize width */
-    max-width: 1200px;  /* prevent stretching too far */
+    width: 100%;
+    max-width: 1200px;
     height: auto;
     display: block;
-    opacity: 0.7;       /* starting opacity for subtle fade */
+    opacity: 0.7;
 }
 
 /* Mobile adjustments */
@@ -152,13 +152,14 @@ html, body {
 </div>
 
 <script>
-// MATRIX RAIN – classic Matrix-style (katakana + glow)
+// MATRIX RAIN – hybrid green & magenta
 const canvas = document.getElementById('matrix-canvas');
 const ctx = canvas.getContext('2d');
 
 let fontSize;
 let columns;
 let drops = [];
+let columnColors = [];
 
 const letters = (
   'アイウエオカキクケコサシスセソタチツテト' +
@@ -172,8 +173,10 @@ function initMatrix() {
     canvas.height = window.innerHeight;
     columns = Math.floor(canvas.width / fontSize);
     drops = [];
+    columnColors = [];
     for (let i = 0; i < columns; i++) {
         drops[i] = Math.random() * canvas.height / fontSize;
+        columnColors[i] = Math.random() > 0.5 ? '#0f0' : '#ff00ff';
     }
 }
 
@@ -185,11 +188,19 @@ function drawMatrix() {
         const char = letters[Math.floor(Math.random() * letters.length)];
         const x = i * fontSize;
         const y = drops[i] * fontSize;
-        ctx.fillStyle = '#baffba';
-        ctx.fillText(char, x, y);
-        ctx.fillStyle = '#0f0';
-        ctx.shadowColor = '#0f0';
+
+        // Column base color with 20% chance to flip
+        let color = columnColors[i];
+        if (Math.random() < 0.2) {
+            color = color === '#0f0' ? '#ff00ff' : '#0f0';
+        }
+
+        ctx.fillStyle = color;
+        ctx.shadowColor = color;
         ctx.shadowBlur = 8;
+
+        ctx.fillText(char, x, y);
+
         if (y > canvas.height && Math.random() > 0.975) {
             drops[i] = 0;
         }
@@ -198,13 +209,13 @@ function drawMatrix() {
     ctx.shadowBlur = 0;
 }
 
-// Subtle sinusoidal breathing animation
+// Subtle sinusoidal breathing animation for bottom image
 const leftImg = document.getElementById('leftImage');
 let start = null;
 function breathe(timestamp) {
     if (!start) start = timestamp;
     const elapsed = (timestamp - start) / 1000;
-    leftImg.style.opacity = 0.6 + 0.2 * Math.sin(elapsed * Math.PI); // subtle fade
+    leftImg.style.opacity = 0.6 + 0.2 * Math.sin(elapsed * Math.PI);
     requestAnimationFrame(breathe);
 }
 requestAnimationFrame(breathe);
@@ -216,4 +227,3 @@ initMatrix();
 
 </body>
 </html>
-
