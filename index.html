@@ -101,9 +101,25 @@ html, body {
 /* Mobile adjustments handled dynamically in JS */
 @media screen and (max-width: 768px) {
     .left-panel img {
-        width: 100%;
+        width: 95%;             /* bigger image */
+        max-height: 60vh;       /* fits below video/footer */
+        margin-top: 20px;
+        margin-bottom: 40px;
+        display: block;
+    }
+
+    .banner-container {
+        height: 200px;
+    }
+
+    .banner-container img {
+        width: 90%;
+    }
+
+    .content iframe {
+        width: 90%;
         height: auto;
-        margin-top: 0;
+        aspect-ratio: 16 / 9;
     }
 }
 </style>
@@ -198,7 +214,7 @@ let start = null;
 function breathe(timestamp) {
     if (!start) start = timestamp;
     const elapsed = (timestamp - start) / 1000;
-    leftImg.style.opacity = 0.625 + 0.375 * Math.sin(elapsed * Math.PI);
+    leftImg.style.opacity = 0.5 + 0.5 * Math.sin(elapsed * Math.PI); // stronger breathing
     requestAnimationFrame(breathe);
 }
 requestAnimationFrame(breathe);
@@ -210,7 +226,7 @@ function adjustLeftPanel() {
     if (window.innerWidth <= 768) {
         footer.after(leftPanel);
         leftPanel.style.position = 'relative';
-        leftPanel.style.width = '90%';
+        leftPanel.style.width = '95%';
         leftPanel.style.margin = '20px auto 40px auto';
     } else {
         document.body.prepend(leftPanel);
