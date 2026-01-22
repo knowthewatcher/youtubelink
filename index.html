@@ -23,12 +23,6 @@ html, body {
     pointer-events: none;
 }
 
-/* Left-side image panel */
-.left-panel img {
-    display: block;
-    opacity: 0.2; /* starting opacity */
-}
-
 /* Banner container */
 .banner-container {
     width: 100vw;
@@ -37,7 +31,7 @@ html, body {
     justify-content: center;
     align-items: center;
     position: relative;
-    z-index: 2; /* above matrix canvas */
+    z-index: 2;
 }
 
 .banner-container img {
@@ -81,33 +75,24 @@ html, body {
     z-index: 1;
 }
 
-/* Desktop left-panel fixed styling */
-@media screen and (min-width: 769px) {
-    .left-panel {
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 1;
-        pointer-events: none;
-    }
-
-    .left-panel img {
-        height: calc(108% * (100vh - 300px));
-        width: auto;
-        margin-top: 300px;
-    }
+/* Full-page image at the bottom */
+.left-panel {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 20px 0 60px 0;
 }
 
-/* Mobile adjustments handled dynamically in JS */
-@media screen and (max-width: 768px) {
-    .left-panel img {
-        width: 95%;             /* bigger image */
-        max-height: 60vh;       /* fits below video/footer */
-        margin-top: 20px;
-        margin-bottom: 40px;
-        display: block;
-    }
+.left-panel img {
+    width: 100%;        /* maximize width */
+    max-width: 1200px;  /* prevent stretching too far */
+    height: auto;
+    display: block;
+    opacity: 0.7;       /* starting opacity for subtle fade */
+}
 
+/* Mobile adjustments */
+@media screen and (max-width: 768px) {
     .banner-container {
         height: 200px;
     }
@@ -120,6 +105,11 @@ html, body {
         width: 90%;
         height: auto;
         aspect-ratio: 16 / 9;
+    }
+
+    .left-panel {
+        width: 95%;
+        margin: 20px auto 40px auto;
     }
 }
 </style>
@@ -155,7 +145,7 @@ html, body {
     </a>
 </div>
 
-<!-- Left image -->
+<!-- Full-size image at the bottom -->
 <div class="left-panel">
     <img id="leftImage" src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/SolomonsKeyModel.png?raw=true"
          alt="Solomons Key Model">
@@ -208,39 +198,16 @@ function drawMatrix() {
     ctx.shadowBlur = 0;
 }
 
-// Sinusoidal breathing animation
+// Subtle sinusoidal breathing animation
 const leftImg = document.getElementById('leftImage');
 let start = null;
 function breathe(timestamp) {
     if (!start) start = timestamp;
     const elapsed = (timestamp - start) / 1000;
-    leftImg.style.opacity = 0.5 + 0.5 * Math.sin(elapsed * Math.PI); // stronger breathing
+    leftImg.style.opacity = 0.6 + 0.2 * Math.sin(elapsed * Math.PI); // subtle fade
     requestAnimationFrame(breathe);
 }
 requestAnimationFrame(breathe);
-
-// Move left-panel below footer on mobile dynamically
-function adjustLeftPanel() {
-    const leftPanel = document.querySelector('.left-panel');
-    const footer = document.querySelector('.footer');
-    if (window.innerWidth <= 768) {
-        footer.after(leftPanel);
-        leftPanel.style.position = 'relative';
-        leftPanel.style.width = '95%';
-        leftPanel.style.margin = '20px auto 40px auto';
-    } else {
-        document.body.prepend(leftPanel);
-        leftPanel.style.position = 'fixed';
-        leftPanel.style.top = '0';
-        leftPanel.style.left = '0';
-        leftPanel.style.height = 'calc(108% * (100vh - 300px))';
-        leftPanel.style.width = 'auto';
-        leftPanel.style.marginTop = '300px';
-    }
-}
-
-window.addEventListener('load', adjustLeftPanel);
-window.addEventListener('resize', adjustLeftPanel);
 
 setInterval(drawMatrix, 33);
 window.addEventListener('resize', initMatrix);
