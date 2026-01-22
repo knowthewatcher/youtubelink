@@ -23,6 +23,31 @@ html, body {
     pointer-events: none;
 }
 
+/* Left-side image panel */
+.left-panel {
+    position: fixed;
+    top: 0;
+    left: 0; /* reset to original position */
+    z-index: 1; /* above matrix canvas */
+    pointer-events: none;
+}
+
+.left-panel img {
+    height: calc(108% * (100vh - 300px)); /* slightly smaller (~10% down from previous 120%) */
+    width: auto;
+    display: block;
+    margin-top: 300px;
+
+    /* Extreme breathing fade animation */
+    opacity: 0.2; /* dark phase start */
+    animation: fadeLoop 5s ease-in-out infinite;
+}
+
+@keyframes fadeLoop {
+    0%, 100% { opacity: 0.2; }  /* dark phase */
+    50% { opacity: 1; }          /* full brightness */
+}
+
 /* Banner container */
 .banner-container {
     width: 100vw;
@@ -31,7 +56,7 @@ html, body {
     justify-content: center;
     align-items: center;
     position: relative;
-    z-index: 1;
+    z-index: 2; /* above left panel */
 }
 
 /* Banner image responsive */
@@ -50,7 +75,7 @@ html, body {
     justify-content: center;
     padding: 40px 0;
     position: relative;
-    z-index: 1;
+    z-index: 2; /* above left panel */
 }
 
 /* Footer */
@@ -60,14 +85,33 @@ html, body {
     padding: 30px 0;
     color: #777;
     position: relative;
+    z-index: 2; /* above left panel */
+}
+
+/* Footer overlay effect */
+.footer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 0;
+}
+
+.footer img {
+    position: relative;
     z-index: 1;
 }
 
 /* Mobile adjustments */
 @media screen and (max-width: 768px) {
+    .left-panel {
+        display: none;
+    }
+
     .banner-container {
         height: 200px;
     }
+
     .banner-container img {
         width: 90%;
     }
@@ -83,12 +127,17 @@ html, body {
 
 <body>
 
+<!-- Left-side image panel -->
+<div class="left-panel">
+    <img src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/SolomonsKeyModel.png?raw=true" alt="Solomons Key Model">
+</div>
+
 <!-- Matrix Rain Canvas -->
 <canvas id="matrix-canvas"></canvas>
 
 <!-- Banner -->
 <div class="banner-container">
-    <img src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/banner2_transparent.png?raw=true" alt="Banner">
+    <img src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/banner3_transparent.png?raw=true" alt="Banner">
 </div>
 
 <!-- Video -->
@@ -109,7 +158,7 @@ html, body {
         <img
             src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/Youtubelogo.png?raw=true"
             alt="YouTube"
-            style="width: 500px; cursor: pointer; opacity: 0.61;">
+            style="width: 500px; cursor: pointer;">
     </a>
 </div>
 
@@ -179,8 +228,3 @@ initMatrix();
 
 </body>
 </html>
-
-
-
-
-
