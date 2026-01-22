@@ -23,7 +23,7 @@ html, body {
     pointer-events: none;
 }
 
-/* Left-side image panel */
+/* Left-side image panel (desktop) */
 .left-panel {
     position: fixed;
     top: 0;
@@ -100,15 +100,16 @@ html, body {
 
 /* Mobile adjustments */
 @media screen and (max-width: 768px) {
-    /* Move left image above video and scale it */
+    /* Move left image below the footer */
     .left-panel {
         position: relative;
         top: auto;
         left: auto;
-        margin: 20px auto 0 auto;
-        width: 90%;
+        margin: 20px auto 40px auto; /* center horizontally, add spacing below footer */
+        width: 90%; /* scale to mobile width */
         height: auto;
         z-index: 2;
+        pointer-events: auto; /* optional if you want user interaction */
     }
 
     .left-panel img {
@@ -136,11 +137,6 @@ html, body {
 </head>
 
 <body>
-
-<!-- Left-side image panel -->
-<div class="left-panel">
-    <img src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/SolomonsKeyModel.png?raw=true" alt="Solomons Key Model">
-</div>
 
 <!-- Matrix Rain Canvas -->
 <canvas id="matrix-canvas"></canvas>
@@ -170,6 +166,11 @@ html, body {
             alt="YouTube"
             style="width: 500px; cursor: pointer;">
     </a>
+</div>
+
+<!-- Left image for mobile (moves below footer) -->
+<div class="left-panel">
+    <img src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/SolomonsKeyModel.png?raw=true" alt="Solomons Key Model">
 </div>
 
 <script>
