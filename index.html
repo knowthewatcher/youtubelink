@@ -23,20 +23,9 @@ html, body {
     pointer-events: none;
 }
 
-/* Left-side image panel (desktop) */
-.left-panel {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1; /* above matrix canvas */
-    pointer-events: none;
-}
-
+/* Left-side image panel */
 .left-panel img {
-    height: calc(108% * (100vh - 300px));
-    width: auto;
     display: block;
-    margin-top: 300px;
     opacity: 0.2; /* starting opacity */
 }
 
@@ -48,7 +37,7 @@ html, body {
     justify-content: center;
     align-items: center;
     position: relative;
-    z-index: 2; /* above left panel */
+    z-index: 2; /* above matrix canvas */
 }
 
 .banner-container img {
@@ -92,34 +81,29 @@ html, body {
     z-index: 1;
 }
 
-/* Mobile adjustments */
-@media screen and (max-width: 768px) {
+/* Desktop left-panel fixed styling */
+@media screen and (min-width: 769px) {
     .left-panel {
-        position: relative; /* remove fixed */
-        margin: 20px auto 40px auto; /* center horizontally below footer */
-        width: 90%;
-        height: auto;
-        pointer-events: auto;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        pointer-events: none;
     }
 
+    .left-panel img {
+        height: calc(108% * (100vh - 300px));
+        width: auto;
+        margin-top: 300px;
+    }
+}
+
+/* Mobile adjustments handled dynamically in JS */
+@media screen and (max-width: 768px) {
     .left-panel img {
         width: 100%;
         height: auto;
         margin-top: 0;
-    }
-
-    .banner-container {
-        height: 200px;
-    }
-
-    .banner-container img {
-        width: 90%;
-    }
-
-    .content iframe {
-        width: 90%;
-        height: auto;
-        aspect-ratio: 16 / 9;
     }
 }
 </style>
@@ -150,16 +134,15 @@ html, body {
 <!-- Footer -->
 <div class="footer">
     <a href="https://youtu.be/1qmQMy_aQW4?si=2Yu6moiwNxVi6kcx" target="_blank">
-        <img
-            src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/Youtubelogo.png?raw=true"
-            alt="YouTube"
-            style="width: 500px; cursor: pointer;">
+        <img src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/Youtubelogo.png?raw=true"
+             alt="YouTube" style="width: 500px; cursor: pointer;">
     </a>
 </div>
 
 <!-- Left image -->
 <div class="left-panel">
-    <img id="leftImage" src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/SolomonsKeyModel.png?raw=true" alt="Solomons Key Model">
+    <img id="leftImage" src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/SolomonsKeyModel.png?raw=true"
+         alt="Solomons Key Model">
 </div>
 
 <script>
@@ -179,10 +162,8 @@ const letters = (
 
 function initMatrix() {
     fontSize = window.innerWidth < 768 ? 12 : 16;
-
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
     columns = Math.floor(canvas.width / fontSize);
     drops = [];
     for (let i = 0; i < columns; i++) {
@@ -193,44 +174,57 @@ function initMatrix() {
 function drawMatrix() {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     ctx.font = fontSize + 'px monospace';
-
     for (let i = 0; i < drops.length; i++) {
         const char = letters[Math.floor(Math.random() * letters.length)];
         const x = i * fontSize;
         const y = drops[i] * fontSize;
-
         ctx.fillStyle = '#baffba';
         ctx.fillText(char, x, y);
-
         ctx.fillStyle = '#0f0';
         ctx.shadowColor = '#0f0';
         ctx.shadowBlur = 8;
-
         if (y > canvas.height && Math.random() > 0.975) {
             drops[i] = 0;
         }
-
         drops[i] += window.innerWidth < 768 ? 1.5 : 1;
     }
-
     ctx.shadowBlur = 0;
 }
 
-// Natural sinusoidal breathing animation for left image
+// Sinusoidal breathing animation
 const leftImg = document.getElementById('leftImage');
 let start = null;
-
 function breathe(timestamp) {
     if (!start) start = timestamp;
-    const elapsed = (timestamp - start) / 1000; // seconds
-    // Sinusoidal opacity: min 0.25, max 1
-    leftImg.style.opacity = 0.625 + 0.375 * Math.sin(elapsed * Math.PI); 
+    const elapsed = (timestamp - start) / 1000;
+    leftImg.style.opacity = 0.625 + 0.375 * Math.sin(elapsed * Math.PI);
     requestAnimationFrame(breathe);
 }
-
 requestAnimationFrame(breathe);
+
+// Move left-panel below footer on mobile dynamically
+function adjustLeftPanel() {
+    const leftPanel = document.querySelector('.left-panel');
+    const footer = document.querySelector('.footer');
+    if (window.innerWidth <= 768) {
+        footer.after(leftPanel);
+        leftPanel.style.position = 'relative';
+        leftPanel.style.width = '90%';
+        leftPanel.style.margin = '20px auto 40px auto';
+    } else {
+        document.body.prepend(leftPanel);
+        leftPanel.style.position = 'fixed';
+        leftPanel.style.top = '0';
+        leftPanel.style.left = '0';
+        leftPanel.style.height = 'calc(108% * (100vh - 300px))';
+        leftPanel.style.width = 'auto';
+        leftPanel.style.marginTop = '300px';
+    }
+}
+
+window.addEventListener('load', adjustLeftPanel);
+window.addEventListener('resize', adjustLeftPanel);
 
 setInterval(drawMatrix, 33);
 window.addEventListener('resize', initMatrix);
