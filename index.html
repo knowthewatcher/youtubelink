@@ -147,12 +147,12 @@ html, body {
 
 <!-- Full-size image at the bottom -->
 <div class="left-panel">
-    <img id="leftImage" src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/SolomonsKeyModel2.png?raw=true"
+    <img id="leftImage" src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/SolomonsKeyModel.png?raw=true"
          alt="Solomons Key Model">
 </div>
 
 <script>
-// MATRIX RAIN – cyberpunk neon (magenta & cyan)
+// MATRIX RAIN – mostly green with subtle magenta accents
 const canvas = document.getElementById('matrix-canvas');
 const ctx = canvas.getContext('2d');
 
@@ -176,8 +176,7 @@ function initMatrix() {
     columnColors = [];
     for (let i = 0; i < columns; i++) {
         drops[i] = Math.random() * canvas.height / fontSize;
-        // Base color: cyan or magenta
-        columnColors[i] = Math.random() > 0.5 ? '#00ffff' : '#ff00ff';
+        columnColors[i] = '#0f0'; // base green
     }
 }
 
@@ -190,10 +189,13 @@ function drawMatrix() {
         const x = i * fontSize;
         const y = drops[i] * fontSize;
 
-        // Column color with 20% random flip
-        let color = columnColors[i];
-        if (Math.random() < 0.2) {
-            color = color === '#ff00ff' ? '#00ffff' : '#ff00ff';
+        // Mostly green, 10% brighter green, 5% subtle magenta
+        let color = columnColors[i]; // base green
+        const r = Math.random();
+        if (r < 0.1) {
+            color = '#baffba'; // brighter green
+        } else if (r < 0.15) {
+            color = '#ff00ff'; // subtle magenta accent
         }
 
         ctx.fillStyle = color;
