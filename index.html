@@ -12,159 +12,166 @@ html, body {
     background-color: black;
 }
 
-/* Matrix canvas covers entire page behind content */
+/* BACKGROUND CANVASES */
+#fog-canvas,
 #matrix-canvas {
     position: fixed;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 0;
     pointer-events: none;
 }
 
-/* Banner container */
+#fog-canvas { z-index: 0; }
+#matrix-canvas { z-index: 1; }
+
+/* CONTENT LAYERS */
+.banner-container,
+.content,
+.footer,
+.left-panel {
+    position: relative;
+    z-index: 2;
+}
+
+/* BANNER */
 .banner-container {
-    width: 100vw;
     height: 300px;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
-    z-index: 2;
+    margin-top: 50px; /* moves banner down */
 }
 
 .banner-container img {
     width: 80%;
-    height: auto;
-    max-height: 100%;
-    object-fit: contain;
-    display: block;
-    opacity: 0.61;
+    opacity: 0.6;
 }
 
-/* Video content */
+/* VIDEO */
 .content {
     display: flex;
     justify-content: center;
-    padding: 40px 0;
-    position: relative;
-    z-index: 2;
+    padding: 60px 0; /* space above and below video */
 }
 
-/* Footer */
+/* FOOTER */
 .footer {
     display: flex;
     justify-content: center;
-    padding: 30px 0;
-    color: #777;
-    position: relative;
-    z-index: 2;
+    padding: 50px 0; /* space around footer */
+    position: relative; /* prevents pseudo-element overlap */
 }
 
 .footer::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.25);
-    z-index: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: -1;
 }
 
-.footer img {
-    position: relative;
-    z-index: 1;
-}
-
-/* Full-page image at the bottom */
+/* BOTTOM IMAGE */
 .left-panel {
     display: flex;
     justify-content: center;
-    width: 100%;
-    margin: 20px 0 60px 0;
+    margin: 40px 0 80px; /* more spacing above and below */
 }
 
 .left-panel img {
     width: 100%;
     max-width: 1200px;
-    height: auto;
-    display: block;
     opacity: 0.7;
 }
 
-/* Mobile adjustments */
-@media screen and (max-width: 768px) {
-    .banner-container {
-        height: 200px;
+/* MOBILE */
+@media (max-width: 768px) {
+    .banner-container { 
+        height: 200px; 
+        margin-top: 30px; 
     }
-
-    .banner-container img {
-        width: 90%;
-    }
-
-    .content iframe {
-        width: 90%;
-        height: auto;
-        aspect-ratio: 16 / 9;
-    }
-
-    .left-panel {
-        width: 95%;
-        margin: 20px auto 40px auto;
-    }
+    .banner-container img { width: 90%; }
+    .content { padding: 40px 0; }
+    .content iframe { width: 90%; aspect-ratio: 16/9; }
+    .footer { padding: 40px 0; }
+    .left-panel { margin: 30px 0 60px; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- Matrix Rain Canvas -->
+<canvas id="fog-canvas"></canvas>
 <canvas id="matrix-canvas"></canvas>
 
-<!-- Banner -->
 <div class="banner-container">
-    <img src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/banner3_transparent.png?raw=true" alt="Banner">
+    <img src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/banner3_transparent.png?raw=true">
 </div>
 
-<!-- Video -->
 <div class="content">
-    <iframe 
-        src="https://www.youtube.com/embed/1qmQMy_aQW4?si=qPvOqQObVMou__5n" 
-        width="720" 
-        height="405" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen>
-    </iframe>
+    <iframe src="https://www.youtube.com/embed/1qmQMy_aQW4"
+            width="720" height="405" frameborder="0" allowfullscreen></iframe>
 </div>
 
-<!-- Footer -->
 <div class="footer">
-    <a href="https://youtu.be/1qmQMy_aQW4?si=2Yu6moiwNxVi6kcx" target="_blank">
+    <a href="https://youtu.be/1qmQMy_aQW4" target="_blank">
         <img src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/Youtubelogo.png?raw=true"
-             alt="YouTube" style="width: 500px; cursor: pointer;">
+             style="width:500px">
     </a>
 </div>
 
-<!-- Full-size image at the bottom -->
 <div class="left-panel">
-    <img id="leftImage" src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/SolomonsKeyModel.png?raw=true"
-         alt="Solomons Key Model">
+    <img id="leftImage"
+         src="https://github.com/NaSTyNiCK562/youtubelink/blob/main/SolomonsKeyModel.png?raw=true">
 </div>
 
 <script>
-// MATRIX RAIN – mostly green with subtle magenta accents
+// ====== BACKGROUND FOG ======
+const fog = document.getElementById('fog-canvas');
+const ftx = fog.getContext('2d');
+
+function resizeFog() {
+    fog.width = window.innerWidth;
+    fog.height = window.innerHeight;
+}
+resizeFog();
+
+let t = 0;
+
+function drawFog() {
+    ftx.clearRect(0,0,fog.width,fog.height);
+
+    const grad = ftx.createRadialGradient(
+        fog.width/2 + Math.sin(t*0.2)*200,
+        fog.height/2 + Math.cos(t*0.15)*200,
+        200,
+        fog.width/2,
+        fog.height/2,
+        fog.width
+    );
+
+    grad.addColorStop(0, 'rgba(255,0,160,0.08)');
+    grad.addColorStop(0.5, 'rgba(0,255,120,0.06)');
+    grad.addColorStop(1, 'rgba(0,0,0,0.9)');
+
+    ftx.fillStyle = grad;
+    ftx.fillRect(0,0,fog.width,fog.height);
+
+    t += 0.002;
+    requestAnimationFrame(drawFog);
+}
+drawFog();
+window.addEventListener('resize', resizeFog);
+
+// ====== MATRIX RAIN ======
 const canvas = document.getElementById('matrix-canvas');
 const ctx = canvas.getContext('2d');
 
-let fontSize;
-let columns;
-let drops = [];
-let columnColors = [];
+let fontSize, columns, drops = [];
 
 const letters = (
   'アイウエオカキクケコサシスセソタチツテト' +
-  'ナニヌネノハヒフヘホマミムメモヤユヨ' +
-  'ラリルレロワヲン0123456789'
+  'ナニヌネノハヒフヘホマミムメモ0123456789'
 ).split('');
 
 function initMatrix() {
@@ -172,63 +179,50 @@ function initMatrix() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     columns = Math.floor(canvas.width / fontSize);
-    drops = [];
-    columnColors = [];
-    for (let i = 0; i < columns; i++) {
-        drops[i] = Math.random() * canvas.height / fontSize;
-        columnColors[i] = '#0f0'; // base green
-    }
+    drops = Array(columns).fill(1);
 }
+initMatrix();
 
 function drawMatrix() {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(0,0,0,0.06)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.font = fontSize + 'px monospace';
+
     for (let i = 0; i < drops.length; i++) {
         const char = letters[Math.floor(Math.random() * letters.length)];
         const x = i * fontSize;
         const y = drops[i] * fontSize;
 
-        // Mostly green, 10% brighter green, 5% subtle magenta
-        let color = columnColors[i]; // base green
+        let color = '#0f0';
         const r = Math.random();
-        if (r < 0.1) {
-            color = '#baffba'; // brighter green
-        } else if (r < 0.21) {
-            color = '#ff00ff'; // subtle magenta accent
-        }
+        if (r < 0.1) color = '#baffba';
+        else if (r < 0.18) color = '#ff33cc';
 
         ctx.fillStyle = color;
         ctx.shadowColor = color;
         ctx.shadowBlur = 8;
-
         ctx.fillText(char, x, y);
 
-        if (y > canvas.height && Math.random() > 0.975) {
-            drops[i] = 0;
-        }
-        drops[i] += window.innerWidth < 768 ? 1.5 : 1;
+        if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
     }
     ctx.shadowBlur = 0;
 }
 
-// Subtle sinusoidal breathing animation for bottom image
+setInterval(drawMatrix, 33);
+window.addEventListener('resize', initMatrix);
+
+// ====== BOTTOM IMAGE BREATHING ======
 const leftImg = document.getElementById('leftImage');
 let start = null;
-function breathe(timestamp) {
-    if (!start) start = timestamp;
-    const elapsed = (timestamp - start) / 1000;
-    leftImg.style.opacity = 0.6 + 0.2 * Math.sin(elapsed * Math.PI);
+function breathe(ts) {
+    if (!start) start = ts;
+    const e = (ts - start) / 1000;
+    leftImg.style.opacity = 0.3 + 0.2 * Math.sin(e * Math.PI);
     requestAnimationFrame(breathe);
 }
 requestAnimationFrame(breathe);
-
-setInterval(drawMatrix, 33);
-window.addEventListener('resize', initMatrix);
-initMatrix();
 </script>
 
 </body>
 </html>
-
-
